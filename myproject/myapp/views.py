@@ -10,6 +10,7 @@ from .models import Flight, Booking
 from reportlab.lib import colors
 import random
 from django.core. mail import send_mail
+import os
 
 def login_view(request):
     error = None
