@@ -25,6 +25,7 @@ def login_view(request):
             request.session['otp'] = otp
             request.session['user_id'] = user.id
             print("BEFORE SEND MAIL")
+            print("OTP EMAIL:", user.email)
             send_mail('Login OTP',
         f'Your OTP is {otp}',
         'untamedchinese@gmail.com',
