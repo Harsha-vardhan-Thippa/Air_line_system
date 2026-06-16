@@ -12,6 +12,7 @@ from reportlab.lib import colors
 import random
 from django.core. mail import send_mail
 # import os
+from django.conf import settings
 
 def login_view(request):
     error = None
@@ -26,9 +27,8 @@ def login_view(request):
             otp = random.randint(100000, 999999)
             request.session['otp'] = otp
             request.session['user_id'] = user.id
-            print("BEFORE SEND MAIL")
-            print("USERNAME:", user.username)
-            print("OTP EMAIL:", user.email)
+            print("EMAIL_USER:", settings.EMAIL_HOST_USER)
+            print("PASSWORD EXISTS:", bool(settings.EMAIL_HOST_PASSWORD))
             send_mail('Login OTP',
         f'Your OTP is {otp}',
         'untamedchinese@gmail.com',
