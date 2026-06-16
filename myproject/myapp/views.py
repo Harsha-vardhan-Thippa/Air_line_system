@@ -24,11 +24,13 @@ def login_view(request):
             otp = random.randint(100000, 999999)
             request.session['otp'] = otp
             request.session['user_id'] = user.id
+            print("BEFORE SEND MAIL")
             send_mail('Login OTP',
         f'Your OTP is {otp}',
         'untamedchinese@gmail.com',
         [user.email],
             fail_silently=False)
+            print("AFTER SEND MAIL")
             return redirect('/verify-otp')
             # login(request, user)
             # next_url = request.session.get(
