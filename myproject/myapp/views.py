@@ -29,11 +29,17 @@ def login_view(request):
             request.session['user_id'] = user.id
             print("EMAIL_USER:", settings.EMAIL_HOST_USER)
             print("PASSWORD EXISTS:", bool(settings.EMAIL_HOST_PASSWORD))
-            send_mail('Login OTP',
-        f'Your OTP is {otp}',
-        'untamedchinese@gmail.com',
-        [user.email],
-            fail_silently=False)
+            try:
+                send_mail(
+                    'Login OTP',
+                    f'Your OTP is {otp}',
+                    settings.EMAIL_HOST_USER,
+                    [user.email],
+                    fail_silently=False
+                )
+                print("EMAIL SENT SUCCESSFULLY")
+            except Exception as e:
+                print("EMAIL ERROR:", repr(e))
             print("AFTER SEND MAIL")
             return redirect('/verify-otp')
             # login(request, user)
