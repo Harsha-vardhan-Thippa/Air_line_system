@@ -57,8 +57,9 @@ def otp_view(request):
         if user_otp == str(session_otp):
             user = User.objects.get(id=request.session['user_id'])
             login(request, user)
-            next_url = request.GET.get('next_url')
+            next_url = request.session.get('next_url')
             if next_url:
+                del request.session['next_url']
                 return redirect(next_url)
             return redirect('/')
         else:
