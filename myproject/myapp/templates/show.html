@@ -1,0 +1,186 @@
+<!--{% if flights %}-->
+<!--    {% for flight in flights %}-->
+<!--    <p>-->
+<!--        {{ flight.flight_number }} |-->
+<!--        {{ flight.source }} → {{ flight.destination }} |-->
+<!--        ₹{{ flight.price }}-->
+<!--        ->{{flight.flight_name}}-->
+<!--        <br>-->
+<!--        <a href="/seat/{{ flight.id }}/?date={{ date }}">Check Availability</a>-->
+<!--    </p>-->
+<!--    {% endfor %}-->
+<!--{% else %}-->
+<!--    <h3>No Flights Available</h3>-->
+<!--    <a href="/">Back to home page</a>-->
+<!--{% endif %}-->
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Available Flights</title>
+
+    <style>
+
+        body{
+            margin:0;
+            padding:0;
+            font-family:Arial;
+            background:#f4f6f9;
+        }
+
+        .container{
+            width:70%;
+            margin:auto;
+            margin-top:40px;
+        }
+
+        h2{
+            text-align:center;
+            color:#333;
+            margin-bottom:30px;
+        }
+
+        .flight-card{
+            background:white;
+            padding:20px;
+            margin-bottom:20px;
+            border-radius:10px;
+            box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        .flight-name{
+            font-size:22px;
+            font-weight:bold;
+            color:#007bff;
+            margin-bottom:10px;
+        }
+
+        .details{
+            font-size:18px;
+            color:#444;
+            margin-bottom:15px;
+        }
+
+        .price{
+            color:green;
+            font-weight:bold;
+        }
+
+        .btn{
+            text-decoration:none;
+            background:#28a745;
+            color:white;
+            padding:10px 15px;
+            border-radius:5px;
+            display:inline-block;
+        }
+
+        .btn:hover{
+            background:#218838;
+        }
+
+        .no-flight{
+            text-align:center;
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        .back-btn{
+            text-decoration:none;
+            background:#007bff;
+            color:white;
+            padding:10px 15px;
+            border-radius:5px;
+        }
+
+        .back-btn:hover{
+            background:#0056b3;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Available Flights</h2>
+
+    {% if flights %}
+
+        {% for flight in flights %}
+
+        <div class="flight-card">
+
+            <div class="flight-name">
+
+                {{ flight.flight_name }}
+
+            </div>
+
+            <div class="details">
+
+                Flight Number:
+                {{ flight.flight_number }}
+
+                <br><br>
+
+                {{ flight.source }}
+                →
+                {{ flight.destination }}
+
+                <br><br>
+
+                <span class="price">
+
+                    ₹{{ flight.price }}
+
+                </span>
+
+            </div>
+
+            <a
+                href="/seat/{{ flight.id }}/?date={{ date }}"
+                class="btn"
+            >
+
+                Check Availability
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="no-flight">
+
+            <h3>No Flights Available</h3>
+
+            <br>
+
+            <a
+                href="/"
+                class="back-btn"
+            >
+
+                Back To Home Page
+
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>

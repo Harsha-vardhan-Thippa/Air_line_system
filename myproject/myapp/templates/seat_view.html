@@ -1,0 +1,312 @@
+
+<!--<!DOCTYPE html>-->
+
+<!--<html>-->
+
+<!--<head>-->
+
+<!--    <title>-->
+
+<!--        Seat Selection-->
+
+<!--    </title>-->
+
+<!--</head>-->
+
+<!--<body>-->
+<!--{% if error %}-->
+<!--    {{error}}-->
+<!--    {% endif %}-->
+<!--    <h2>-->
+
+<!--        Select Seats-->
+
+<!--    </h2>-->
+
+
+<!--    <h3>-->
+
+<!--        Flight:-->
+<!--        {{ flight.flight_number }}-->
+
+<!--    </h3>-->
+
+
+<!--    <p>-->
+
+<!--        {{ flight.source }}-->
+<!--        →-->
+<!--        {{ flight.destination }}-->
+
+<!--    </p>-->
+
+
+<!--    <p>-->
+
+<!--        Price Per Seat:-->
+<!--        ₹{{ flight.price }}-->
+
+<!--    </p>-->
+
+<!--    <form method="POST">-->
+
+<!--        {% csrf_token %}-->
+
+
+<!--        {% for seat in all_seats %}-->
+
+
+<!--            &lt;!&ndash; BOOKED SEAT &ndash;&gt;-->
+<!--            {% if seat in booked_seats %}-->
+
+<!--                <input-->
+<!--                    type="checkbox"-->
+<!--                    disabled-->
+<!--                >-->
+
+<!--                {{ seat }} already Booked-->
+
+<!--                <br><br>-->
+
+
+<!--            &lt;!&ndash; AVAILABLE SEAT &ndash;&gt;-->
+<!--            {% else %}-->
+
+<!--                <input-->
+<!--                    type="checkbox"-->
+<!--                    name="seats"-->
+<!--                    value="{{ seat }}"-->
+<!--                >-->
+
+<!--                {{ seat }}-->
+
+<!--                <br><br>-->
+
+
+<!--            {% endif %}-->
+
+
+<!--        {% endfor %}-->
+
+
+<!--        <button type="submit">-->
+
+<!--            Book Now-->
+
+<!--        </button>-->
+
+<!--    </form>-->
+
+<!--</body>-->
+
+<!--</html>-->
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Seat Selection</title>
+
+    <style>
+
+        body{
+            margin:0;
+            padding:0;
+            font-family:Arial;
+            background:#f4f6f9;
+        }
+
+        .container{
+            width:60%;
+            margin:auto;
+            margin-top:40px;
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        h2{
+            text-align:center;
+            color:#333;
+            margin-bottom:25px;
+        }
+
+        .flight-details{
+            background:#f8f9fa;
+            padding:15px;
+            border-radius:8px;
+            margin-bottom:25px;
+        }
+
+        .flight-details p{
+            font-size:18px;
+            color:#444;
+        }
+
+        .price{
+            color:green;
+            font-weight:bold;
+        }
+
+        .error{
+            background:#f8d7da;
+            color:#721c24;
+            padding:12px;
+            border-radius:5px;
+            margin-bottom:20px;
+        }
+
+        .seat-grid{
+            display:grid;
+            grid-template-columns:repeat(4,1fr);
+            gap:15px;
+            margin-top:20px;
+        }
+
+        .seat{
+            padding:15px;
+            border-radius:8px;
+            text-align:center;
+            font-weight:bold;
+        }
+
+        .available{
+            background:#d4edda;
+            color:#155724;
+        }
+
+        .booked{
+            background:#f8d7da;
+            color:#721c24;
+        }
+
+        button{
+            width:100%;
+            padding:14px;
+            margin-top:30px;
+            background:#007bff;
+            color:white;
+            border:none;
+            border-radius:5px;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#0056b3;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    {% if error %}
+
+    <div class="error">
+
+        {{ error }}
+
+    </div>
+
+    {% endif %}
+
+    <h2>Select Seats</h2>
+
+    <div class="flight-details">
+
+        <p>
+
+            <strong>Flight:</strong>
+            {{ flight.flight_name }}
+
+        </p>
+
+        <p>
+
+            <strong>Flight Number:</strong>
+            {{ flight.flight_number }}
+
+        </p>
+
+        <p>
+
+            {{ flight.source }}
+            →
+            {{ flight.destination }}
+
+        </p>
+
+        <p class="price">
+
+            Price Per Seat:
+            ₹{{ flight.price }}
+
+        </p>
+
+    </div>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="seat-grid">
+
+            {% for seat in all_seats %}
+
+                {% if seat in booked_seats %}
+
+                <div class="seat booked">
+
+                    <input
+                        type="checkbox"
+                        disabled
+                    >
+
+                    {{ seat }}
+
+                    <br>
+
+                    Booked
+
+                </div>
+
+                {% else %}
+
+                <div class="seat available">
+
+                    <input
+                        type="checkbox"
+                        name="seats"
+                        value="{{ seat }}"
+                    >
+
+                    {{ seat }}
+
+                </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+        <button type="submit">
+
+            Book Now
+
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

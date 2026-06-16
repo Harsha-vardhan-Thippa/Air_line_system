@@ -1,0 +1,207 @@
+<!--<p>Your Bookings</p>-->
+<!--<br>-->
+<!--{% if bookings %}-->
+<!--{% for booking in bookings %}-->
+<!--booking ID: {{booking.id}}-->
+<!--<br>-->
+<!--booking date: {{booking.booking_date}}-->
+<!--<br>-->
+<!--AirLine: {{booking.flight.flight_name}}-->
+<!--<br>-->
+<!--travelling date: {{booking.travel_date}}-->
+<!--<br>-->
+<!--seat_number: {{booking.seat_number}}-->
+<!--<br>-->
+<!--<a href="/cancel_booking/{{booking.id}}">cancel book</a>-->
+<!--<br>-->
+<!--============================================================================================-->
+<!--{% endfor %}-->
+<!--{% else %}-->
+<!--<h1>No More Bookings</h1>-->
+<!--<a href="/">Return to home</a>-->
+<!--{% endif %}-->
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Your Bookings</title>
+
+    <style>
+
+        body{
+            margin:0;
+            padding:0;
+            font-family:Arial;
+            background:#f4f6f9;
+        }
+
+        .container{
+            width:70%;
+            margin:auto;
+            margin-top:40px;
+        }
+
+        h2{
+            text-align:center;
+            color:#333;
+            margin-bottom:30px;
+        }
+
+        .booking-card{
+            background:white;
+            padding:20px;
+            margin-bottom:20px;
+            border-radius:10px;
+            box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        .booking-card p{
+            font-size:18px;
+            color:#444;
+            margin:8px 0;
+        }
+
+        .cancel-btn{
+            display:inline-block;
+            margin-top:15px;
+            text-decoration:none;
+            background:#dc3545;
+            color:white;
+            padding:10px 15px;
+            border-radius:5px;
+        }
+
+        .cancel-btn:hover{
+            background:#c82333;
+        }
+
+        .empty-box{
+            background:white;
+            padding:40px;
+            text-align:center;
+            border-radius:10px;
+            box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        .home-btn{
+            text-decoration:none;
+            background:#007bff;
+            color:white;
+            padding:10px 15px;
+            border-radius:5px;
+        }
+
+        .home-btn:hover{
+            background:#0056b3;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Your Bookings</h2>
+
+    {% if bookings %}
+
+        {% for booking in bookings %}
+
+        <div class="booking-card">
+
+            <p>
+
+                <strong>Booking ID:</strong>
+                {{ booking.id }}
+
+            </p>
+
+            <p>
+
+                <strong>Booking Date:</strong>
+                {{ booking.booking_date }}
+
+            </p>
+
+            <p>
+
+                <strong>Airline:</strong>
+                {{ booking.flight.flight_name }}
+
+            </p>
+
+            <p>
+
+                <strong>Flight Number:</strong>
+                {{ booking.flight.flight_number }}
+
+            </p>
+
+            <p>
+
+                <strong>Route:</strong>
+
+                {{ booking.flight.source }}
+                →
+                {{ booking.flight.destination }}
+
+            </p>
+
+            <p>
+
+                <strong>Travelling Date:</strong>
+                {{ booking.travel_date }}
+
+            </p>
+
+            <p>
+
+                <strong>Seat Number:</strong>
+                {{ booking.seat_number }}
+
+            </p>
+
+            <a
+                href="/cancel_booking/{{ booking.id }}/"
+                class="cancel-btn"
+            >
+
+                Cancel Booking
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty-box">
+
+            <h1>No More Bookings</h1>
+
+            <br>
+
+            <a
+                href="/"
+                class="home-btn"
+            >
+
+                Return To Home
+
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>

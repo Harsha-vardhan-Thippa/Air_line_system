@@ -1,0 +1,161 @@
+<!--<h2>Login</h2>-->
+
+<!--<form method="POST">-->
+<!--    {% csrf_token %}-->
+<!--    <input name="username" placeholder="Username"><br>-->
+<!--    <input type="password" name="password" placeholder="Password"><br>-->
+<!--    <button>Login</button>-->
+<!--</form>-->
+
+<!--{% if error %}-->
+<!--<p style="color:red">{{ error }}</p>-->
+<!--<a href="/register/">Register</a>-->
+<!--{% endif %}-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+
+<style>
+
+body{
+margin:0;
+padding:0;
+font-family:Arial;
+background:#f4f6f9;
+}
+
+.login-box{
+width:350px;
+margin:auto;
+margin-top:100px;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+}
+
+h2{
+text-align:center;
+color:#333;
+margin-bottom:25px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:5px;
+font-size:15px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#007bff;
+color:white;
+border:none;
+border-radius:5px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+.error{
+color:red;
+text-align:center;
+margin-top:15px;
+}
+
+.register-link{
+display:block;
+text-align:center;
+margin-top:15px;
+text-decoration:none;
+color:#007bff;
+}
+
+.register-link:hover{
+text-decoration:underline;
+}
+
+.forgot-link{
+display:block;
+text-align:right;
+margin-bottom:15px;
+text-decoration:none;
+color:#007bff;
+font-size:14px;
+}
+
+.forgot-link:hover{
+text-decoration:underline;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h2>Login</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<input
+name="username"
+placeholder="Username"
+>
+
+<input
+type="password"
+name="password"
+placeholder="Password"
+>
+
+<a
+href="/forgot-password/"
+class="forgot-link"
+>
+Forgot Password?
+</a>
+
+<button>
+
+Login
+
+</button>
+
+</form>
+
+{% if error %}
+
+<p class="error">
+
+{{ error }}
+
+</p>
+
+{% endif %}
+
+<a
+href="/register/"
+class="register-link"
+>
+Create New Account
+</a>
+
+</div>
+
+</body>
+
+</html>
