@@ -54,7 +54,6 @@ A backend-focused Airline Reservation System developed using **Django** that ena
 - SQLite
 - HTML
 - CSS
-- JavaScript
 - ReportLab
 - Gmail SMTP
 
@@ -65,7 +64,6 @@ A backend-focused Airline Reservation System developed using **Django** that ena
 - Home Page
 - User Registration
 - Login Page
-- Forgot Password
 - Flight Search
 - Seat Selection
 - Payment Page
@@ -91,7 +89,7 @@ A backend-focused Airline Reservation System developed using **Django** that ena
 
 ## 👨‍💻 Author
 
-**Harsha Vardhan Thippa**
+**Thippa Harshavardhan**
 
 - GitHub: https://github.com/Harsha-vardhan-Thippa
 
