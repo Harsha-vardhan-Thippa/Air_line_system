@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
-RAZORPAY_KEY_ID = "rzp_test_Tk7n0WanWliOnb"
-RAZORPAY_KEY_SECRET = "kW6XZroWhqZmbNzzWJwwAIkx"
+RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET")
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-yvo3gxcj6cra60wy+6=qh#%4qrju@dij$@^w+j88ljs7sx$qo4'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "air-line-system.onrender.com",
@@ -122,15 +122,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'untamedchinese@gmail.com'
-EMAIL_HOST_PASSWORD = 'medhfhmyjohrjmco'
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_TIMEOUT = 30
