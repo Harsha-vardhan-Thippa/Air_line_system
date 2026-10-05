@@ -135,84 +135,68 @@
 
 <!--</html>-->
 <!DOCTYPE html>
-
 <html>
 
 <head>
-
     <title>Payment Page</title>
 
     <style>
-
-        body{
-            margin:0;
-            padding:0;
-            font-family:Arial;
-            background:#f4f6f9;
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial;
+            background: #f4f6f9;
         }
 
-        .container{
-            width:40%;
-            margin:auto;
-            margin-top:50px;
-            background:white;
-            padding:30px;
-            border-radius:10px;
-            box-shadow:0px 0px 10px rgba(0,0,0,0.1);
+        .container {
+            width: 40%;
+            margin: auto;
+            margin-top: 50px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
         }
 
-        h2{
-            text-align:center;
-            color:#333;
-            margin-bottom:25px;
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
         }
 
-        .flight-details{
-            background:#f8f9fa;
-            padding:15px;
-            border-radius:8px;
-            margin-bottom:25px;
+        .flight-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
         }
 
-        .flight-details p{
-            font-size:18px;
-            color:#444;
+        .flight-details p {
+            font-size: 18px;
+            color: #444;
         }
 
-        .price{
-            color:green;
-            font-weight:bold;
-            font-size:20px;
+        .price {
+            color: green;
+            font-weight: bold;
+            font-size: 20px;
         }
 
-        h3{
-            color:#333;
-            margin-bottom:15px;
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
         }
 
-        .payment-option{
-            background:#f8f9fa;
-            padding:12px;
-            border-radius:5px;
-            margin-bottom:12px;
+        button:hover {
+            background: #218838;
         }
-
-        button{
-            width:100%;
-            padding:14px;
-            background:#28a745;
-            color:white;
-            border:none;
-            border-radius:5px;
-            font-size:16px;
-            cursor:pointer;
-            margin-top:20px;
-        }
-
-        button:hover{
-            background:#218838;
-        }
-
     </style>
 
 </head>
@@ -226,117 +210,127 @@
     <div class="flight-details">
 
         <p>
-
             <strong>Flight:</strong>
             {{ flight.flight_name }}
-
         </p>
 
         <p>
-
             <strong>Flight Number:</strong>
             {{ flight.flight_number }}
-
         </p>
 
         <p>
-
             <strong>From:</strong>
             {{ flight.source }}
-
         </p>
 
         <p>
-
             <strong>To:</strong>
             {{ flight.destination }}
-
         </p>
 
         <p class="price">
-
-            Total Price:
-            ₹{{ total_price }}
-
+            Total Price: ₹{{ total_price }}
         </p>
 
     </div>
 
-    <form method="POST">
-
-        {% csrf_token %}
-
-        <h3>Select Payment Method</h3>
-
-        <div class="payment-option">
-
-            <input
-                type="radio"
-                name="payment_method"
-                value="PhonePe"
-            >
-
-            PhonePe
-
-        </div>
-
-        <div class="payment-option">
-
-            <input
-                type="radio"
-                name="payment_method"
-                value="Google Pay"
-            >
-
-            Google Pay
-
-        </div>
-
-        <div class="payment-option">
-
-            <input
-                type="radio"
-                name="payment_method"
-                value="Amazon Pay"
-            >
-
-            Amazon Pay
-
-        </div>
-
-        <div class="payment-option">
-
-            <input
-                type="radio"
-                name="payment_method"
-                value="Razorpay"
-            >
-
-            Razorpay
-
-        </div>
-
-        <div class="payment-option">
-
-            <input
-                type="radio"
-                name="payment_method"
-                value="Paypal"
-            >
-
-            Paypal
-
-        </div>
-
-        <button type="submit">
-
-            Book Flight
-
-        </button>
-
-    </form>
+    <button id="pay-button">
+        Pay ₹{{ total_price }}
+    </button>
 
 </div>
+
+
+<!-- Razorpay Checkout Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+    var options = {
+
+        "key": "{{ razorpay_key_id }}",
+
+        "amount": "{{ total_price|add:'0' }}00",
+
+        "currency": "INR",
+
+        "name": "SH Airlines",
+
+        "description": "Flight Ticket Booking",
+
+        "order_id": "{{ razorpay_order_id }}",
+
+        "handler": function (response) {
+
+            // Send payment details to Django
+            var form = document.createElement("form");
+
+            form.method = "POST";
+            form.action = "{% url 'payment_success' %}";
+
+            var csrf = document.createElement("input");
+            csrf.type = "hidden";
+            csrf.name = "csrfmiddlewaretoken";
+            csrf.value = "{{ csrf_token }}";
+            form.appendChild(csrf);
+
+
+            var payment_id = document.createElement("input");
+            payment_id.type = "hidden";
+            payment_id.name = "razorpay_payment_id";
+            payment_id.value = response.razorpay_payment_id;
+            form.appendChild(payment_id);
+
+
+            var order_id = document.createElement("input");
+            order_id.type = "hidden";
+            order_id.name = "razorpay_order_id";
+            order_id.value = response.razorpay_order_id;
+            form.appendChild(order_id);
+
+
+            var signature = document.createElement("input");
+            signature.type = "hidden";
+            signature.name = "razorpay_signature";
+            signature.value = response.razorpay_signature;
+            form.appendChild(signature);
+
+
+            document.body.appendChild(form);
+
+            form.submit();
+        },
+
+        "prefill": {
+
+            "name": "{{ request.user.username }}",
+
+            "email": "{{ request.user.email }}"
+
+        },
+
+        "theme": {
+
+            "color": "#28a745"
+
+        }
+
+    };
+
+
+    var razorpay = new Razorpay(options);
+
+
+    document.getElementById("pay-button").onclick = function(e) {
+
+        razorpay.open();
+
+        e.preventDefault();
+
+    };
+
+</script>
 
 </body>
 

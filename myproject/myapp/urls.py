@@ -13,5 +13,10 @@ urlpatterns = [
     path('cancel_booking/<int:booking_id>/', views.cancel_bookings),
     path('success/<str:booking_id>/', views.booking_success),
     path('verify-otp/',views.otp_view),
+path(
+    'payment-success/',
+    views.payment_success,
+    name='payment_success'
+),
 
 ]

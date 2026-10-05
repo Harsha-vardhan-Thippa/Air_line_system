@@ -23,6 +23,19 @@ class Booking(models.Model):
     booking_date = models.DateTimeField(auto_now_add=True)
     seat_number = models.CharField( max_length=10,default='A1')
     payment_methods = models.CharField(max_length=50,default='Unknown')
-
+    razorpay_order_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    razorpay_payment_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    payment_status = models.CharField(
+        max_length=20,
+        default='Pending'
+    )
     def __str__(self):
         return f"{self.user.username}, {self.flight.flight_number}, {self.flight.flight_name}"

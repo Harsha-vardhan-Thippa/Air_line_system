@@ -13,6 +13,7 @@ import random
 from django.core. mail import send_mail
 # import os
 from django.conf import settings
+import razorpay
 
 def login_view(request):
     error = None
@@ -27,20 +28,13 @@ def login_view(request):
             otp = random.randint(100000, 999999)
             request.session['otp'] = otp
             request.session['user_id'] = user.id
-            print("EMAIL_USER:", settings.EMAIL_HOST_USER)
-            print("PASSWORD EXISTS:", bool(settings.EMAIL_HOST_PASSWORD))
-            try:
-                send_mail(
+            send_mail(
                     'Login OTP',
                     f'Your OTP is {otp}',
                     settings.EMAIL_HOST_USER,
                     [user.email],
                     fail_silently=False
-                )
-                print("EMAIL SENT SUCCESSFULLY")
-            except Exception as e:
-                print("EMAIL ERROR:", repr(e))
-            print("AFTER SEND MAIL")
+            )
             return redirect('/verify-otp')
             # login(request, user)
             # next_url = request.session.get(
@@ -148,39 +142,126 @@ def seat_view(request,flight_id):
 
 
 def payment_page(request, flight_id):
+
     flight = Flight.objects.get(id=flight_id)
+
     seat_number = request.GET.get('seats').split('-')
     date = request.GET.get('date')
+
     number_of_seats = len(seat_number)
-    total_price = number_of_seats*flight.price
-    booking_id = []
-    if request.method == 'POST':
-        if not request.user.is_authenticated:
-            request.session['next_url'] = (
-                request.get_full_path()
+    total_price = number_of_seats * flight.price
+
+    if not request.user.is_authenticated:
+        request.session['next_url'] = request.get_full_path()
+        return redirect('/login/')
+
+    # Create Razorpay client
+    client = razorpay.Client(
+        auth=(
+            settings.RAZORPAY_KEY_ID,
+            settings.RAZORPAY_KEY_SECRET
+        )
+    )
+
+    # Create Razorpay order
+    order = client.order.create({
+        'amount': total_price * 100,
+        'currency': 'INR',
+        'payment_capture': 1
+    })
+
+    # Store order information temporarily in session
+    request.session['razorpay_order_id'] = order['id']
+    request.session['flight_id'] = flight_id
+    request.session['seats'] = "-".join(seat_number)
+    request.session['travel_date'] = date
+
+    return render(
+        request,
+        'payment.html',
+        {
+            'flight': flight,
+            'total_price': total_price,
+            'razorpay_order_id': order['id'],
+            'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+        }
+    )
+
+def payment_success(request):
+
+    if request.method != "POST":
+        return redirect('/')
+
+    payment_id = request.POST.get('razorpay_payment_id')
+    order_id = request.POST.get('razorpay_order_id')
+    signature = request.POST.get('razorpay_signature')
+
+    client = razorpay.Client(
+        auth=(
+            settings.RAZORPAY_KEY_ID,
+            settings.RAZORPAY_KEY_SECRET
+        )
+    )
+
+    try:
+
+        # Verify Razorpay payment
+        client.utility.verify_payment_signature({
+            'razorpay_order_id': order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature
+        })
+
+    except Exception:
+        return HttpResponse("Payment verification failed")
+
+    # Get booking information from session
+    flight_id = request.session.get('flight_id')
+    seats = request.session.get('seats')
+    date = request.session.get('travel_date')
+
+    flight = Flight.objects.get(id=flight_id)
+
+    seat_number = seats.split('-')
+
+    booking_ids = []
+
+    for seat in seat_number:
+
+        # Double-check that seat is still available
+        if Booking.objects.filter(
+            flight=flight,
+            travel_date=date,
+            seat_number=seat
+        ).exists():
+
+            return HttpResponse(
+                "Sorry, this seat was already booked."
             )
 
-            return redirect('/login/')
-        payment_method = request.POST.get('payment_method')
-        for i in seat_number:
-            booking = Booking.objects.create(
-                user=request.user,
-                flight=flight,
-                travel_date=date,
-                seat_number=i,
-                payment_methods=payment_method,
-            )
-            booking_id.append(str(booking.id))
-        booking_id = "-".join(booking_id)
+        booking = Booking.objects.create(
+            user=request.user,
+            flight=flight,
+            travel_date=date,
+            seat_number=seat,
+            payment_methods="Razorpay",
+            razorpay_order_id=order_id,
+            razorpay_payment_id=payment_id,
+            payment_status="Paid"
+        )
 
-        bookings = Booking.objects.filter(id__in=booking_id.split('-'))
-        send_ticket_email(bookings)
+        booking_ids.append(str(booking.id))
 
-        # request.session['download_url'] = f'/download/{booking_id}'
-        # messages.success(request,f'Seat Successfully Booked Using {payment_method}')
+    booking_id = "-".join(booking_ids)
 
-        return redirect(f'/success/{booking_id}/')
-    return render(request,'payment.html', {'flight': flight, 'total_price': total_price})
+    bookings = Booking.objects.filter(
+        id__in=booking_ids
+    )
+
+    send_ticket_email(bookings)
+
+    return redirect(f'/success/{booking_id}/')
+
 
 def booking_success(request, booking_id):
     bookings = Booking.objects.filter(id__in=booking_id.split("-"))
