@@ -258,7 +258,11 @@ def payment_success(request):
         id__in=booking_ids
     )
 
-    send_ticket_email(bookings)
+    # send_ticket_email(bookings)
+    try:
+        send_ticket_email(bookings)
+    except Exception:
+        pass
 
     return redirect(f'/success/{booking_id}/')
 
@@ -414,7 +418,7 @@ def send_ticket_email(bookings):
     email=EmailMessage(
         'SH AIRLINES',
         'Thank you for your Servise \n Your ticket is attached below.',
-        'untamedchinese@gmail.com',
+        settings.EMAIL_HOST_USER,
         [bookings.first().user.email]
     )
     email.attach(
