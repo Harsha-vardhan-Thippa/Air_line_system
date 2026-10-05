@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    "air-line-system.onrender.com",
+    "air-line-system-6kbt.onrender.com",
     "localhost",
     "127.0.0.1",
 ]
